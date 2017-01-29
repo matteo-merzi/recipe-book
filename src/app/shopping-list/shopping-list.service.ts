@@ -3,15 +3,28 @@ export class ShoppingListService {
 
   private items: Ingredient[] = [];
 
-  constructor() { }
+  constructor() {
+  }
 
   getItems() {
     return this.items;
   }
 
-  addItems(items: Ingredient[]){
+  addItems(items: Ingredient[]) {
     // push every single item in items to the this.items array
     Array.prototype.push.apply(this.items, items);
+  }
+
+  addItem(item: Ingredient) {
+    this.items.push(item);
+  }
+
+  editItem(oldItem: Ingredient, newItem: Ingredient) {
+    this.items[this.items.indexOf(oldItem)] = newItem;
+  }
+
+  deleteItem(item: Ingredient) {
+    this.items.splice(this.items.indexOf(item), 1);
   }
 
 }
