@@ -1,6 +1,8 @@
 import {Injectable} from '@angular/core';
 import {Recipe} from "./recipe";
 import {Ingredient} from "../shared/ingredient";
+import {Headers, Http, Response} from "@angular/http";
+import 'rxjs/add/operator/map';
 
 @Injectable()
 export class RecipeService {
@@ -13,7 +15,7 @@ export class RecipeService {
     new Recipe('Soup', 'Less tasty', 'http://www.my7daydiet.com/images/wonder-soup.jpg', [])
   ];
 
-  constructor() {
+  constructor(private http: Http) {
   }
 
   getRecipies() {
@@ -34,6 +36,24 @@ export class RecipeService {
 
   editRecipe(oldRecipe: Recipe, newRecipe: Recipe) {
     this.recipes[this.recipes.indexOf(oldRecipe)] = newRecipe;
+  }
+
+  storeData() {
+    const body = JSON.stringify(this.recipes);
+    const headers = new Headers({
+      'Content-Type': 'application/json'
+    });
+    return this.http.put('https://recipebook-c4806.firebaseio.com/recipes.json', body, {headers: headers});
+  }
+
+  fetchData() {
+    return this.http.get('https://recipebook-c4806.firebaseio.com/recipes.json')
+      .map((response: Response) => response.json())
+      .subscribe(
+        (data: Recipe[]) => {
+          this.recipes = data;
+        }
+      );
   }
 
 }
