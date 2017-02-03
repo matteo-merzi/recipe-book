@@ -1,18 +1,21 @@
-import {Injectable} from '@angular/core';
-import {Recipe} from "./recipe";
-import {Ingredient} from "../shared/ingredient";
+import {Injectable, EventEmitter} from '@angular/core';
 import {Headers, Http, Response} from "@angular/http";
 import 'rxjs/add/operator/map';
 
+import {Recipe} from "./recipe";
+import {Ingredient} from "../shared/ingredient";
+
 @Injectable()
 export class RecipeService {
+
+  recipesChanged = new EventEmitter<Recipe[]>();
 
   private recipes: Recipe[] = [
     new Recipe('Pizza', 'Very tasty', 'http://www.cicis.com/media/1137/pizza_trad_alfredo.png', [
       new Ingredient('Tomatoes', 2),
       new Ingredient('Mozzarella', 1)
     ]),
-    new Recipe('Soup', 'Less tasty', 'http://www.my7daydiet.com/images/wonder-soup.jpg', [])
+    new Recipe('Soup', 'Less tasty', 'http://static.buttalapasta.it/r/300x190/www.buttalapasta.it/img/zuppa-sedano-rapa.jpg', [])
   ];
 
   constructor(private http: Http) {
@@ -52,6 +55,7 @@ export class RecipeService {
       .subscribe(
         (data: Recipe[]) => {
           this.recipes = data;
+          this.recipesChanged.emit(this.recipes);
         }
       );
   }
